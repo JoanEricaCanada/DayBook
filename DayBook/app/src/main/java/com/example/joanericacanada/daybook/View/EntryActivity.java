@@ -13,7 +13,6 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.text.DateFormat;
-import java.util.Date;
 
 public class EntryActivity extends FragmentActivity {
     //TAGS
@@ -24,22 +23,35 @@ public class EntryActivity extends FragmentActivity {
 
     //VARIABLES
     DayBookStorage dbs;
-    EntryModel entry = new EntryModel();
+    EntryModel entry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_entry_layout);
 
-        dbs = new DayBookStorage(getApplicationContext(), "daybook.json");
+        dbs = new DayBookStorage(this, "daybook.json");
 
-        String date = DateFormat.getDateTimeInstance().format(new Date());
+        try {
+            entry = dbs.loadEntry();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if(entry == null)
+            entry = new EntryModel();
+
+        String currentdate = DateFormat.getDateTimeInstance().format(entry.getDate());
         txtDate = (TextView) findViewById(R.id.txtDate);
-        txtDate.setText(date);
+        txtDate.setText(currentdate);
 
         edtTitle = (EditText) findViewById(R.id.edtTitle);
+        edtTitle.setText(entry.getTitle());
 
         edtBody = (EditText) findViewById(R.id.edtEntry);
+        edtBody.setText(entry.getBody());
     }
 
     @Override
@@ -47,7 +59,6 @@ public class EntryActivity extends FragmentActivity {
         super.onPause();
         entry.setBody(edtBody.getText().toString());
         entry.setTitle(edtTitle.getText().toString());
-        entry.setDate(entry.getDate());
 
         try {
             dbs.saveEntry(entry);
