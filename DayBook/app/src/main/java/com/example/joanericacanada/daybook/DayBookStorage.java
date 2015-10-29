@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 
 /**
  * Created by joanericacanada on 10/28/15.
@@ -55,7 +56,8 @@ public class DayBookStorage {
         }
     }
 
-    public EntryModel loadEntry() throws JSONException, IOException{
+    public ArrayList<EntryModel> loadEntry() throws JSONException, IOException{
+        ArrayList<EntryModel> journal = new ArrayList<>();
         BufferedReader bReader = null;
 
         try {
@@ -71,14 +73,16 @@ public class DayBookStorage {
             Log.e("DBStore", Integer.toString(arr.length()));
 
             for(int count = 0; count < arr.length(); count++){
-                entry = new EntryModel(arr.getJSONObject(count));
+                journal.add(new EntryModel(arr.getJSONObject(count)));
             }
-        }catch (Exception e){
+        }catch (IOException e){
 
-        }finally {
+        }catch (JSONException e) {
+
+        } finally{
             if(bReader != null)
                 bReader.close();
         }
-        return entry;
+        return journal;
     }
 }
