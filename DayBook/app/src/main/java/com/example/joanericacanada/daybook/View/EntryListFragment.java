@@ -1,12 +1,18 @@
 package com.example.joanericacanada.daybook.View;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.joanericacanada.daybook.EntryActivity;
 import com.example.joanericacanada.daybook.EntryKeeper;
 import com.example.joanericacanada.daybook.Model.EntryModel;
 import com.example.joanericacanada.daybook.R;
@@ -25,13 +31,51 @@ public class EntryListFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         journal = EntryKeeper.get(getActivity()).getEntries();
-        JournalAdapter jAdapter = new JournalAdapter(journal);
+        journalAdapter jAdapter = new journalAdapter(journal);
         setListAdapter(jAdapter);
     }
+    @Override
+    public void onResume(){
+        super.onResume();
+        ((journalAdapter) getListAdapter()).notifyDataSetChanged();
+    }
 
-    private class JournalAdapter extends ArrayAdapter<EntryModel> {
-        public JournalAdapter(ArrayList<EntryModel> journal){
+    @Override
+    public void onListItemClick(ListView l, View v,int pos, long id){
+        EntryModel e = ((journalAdapter)getListAdapter()).getItem(pos);
+
+        Intent i = new Intent(getActivity(), EntryFragment.class);
+        i.putExtra(EntryFragment.ENTRY_ID, e.getId());
+        startActivity(i);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_entry, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.new_entry:
+                EntryModel entry = new EntryModel();
+                EntryKeeper.get(getActivity()).newEntry(entry);
+
+                Intent intent = new Intent(getActivity(), EntryActivity.class);
+                intent.putExtra(EntryFragment.ENTRY_ID, entry.getId());
+                startActivityForResult(intent, 0);
+                //startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private class journalAdapter extends ArrayAdapter<EntryModel> {
+        public journalAdapter(ArrayList<EntryModel> journal){
             super(getActivity(), 0, journal);
         }
 

@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.joanericacanada.daybook.DayBookStorage;
+import com.example.joanericacanada.daybook.EntryKeeper;
 import com.example.joanericacanada.daybook.Model.EntryModel;
 import com.example.joanericacanada.daybook.R;
 
@@ -18,6 +19,7 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.text.DateFormat;
+import java.util.UUID;
 
 public class EntryFragment extends Fragment {
     //TAGS
@@ -35,9 +37,9 @@ public class EntryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.create_entry_fragment, parent, false);
 
-        /*
         dbs = new DayBookStorage(getContext(), "daybook.json");
 
+        /*
         try {
             entry = dbs.loadEntry();
         } catch (JSONException e) {
@@ -97,9 +99,19 @@ public class EntryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        UUID id = (UUID)getActivity().getIntent()
+                .getSerializableExtra(ENTRY_ID);
+        entry = EntryKeeper.get(getActivity()).getEntry(id);
     }
 
+    public static EntryFragment newInstance(UUID id){
+        Bundle args = new Bundle();
+        args.putSerializable(ENTRY_ID, id);
 
+        EntryFragment fragment = new EntryFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onPause() {

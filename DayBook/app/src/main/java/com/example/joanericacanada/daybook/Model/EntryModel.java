@@ -44,7 +44,7 @@ public class EntryModel {
 
     public JSONObject saveToJson() throws JSONException{
         JSONObject jObject = new JSONObject();
-        jObject.put(JSON_ID, id);
+        jObject.put(JSON_ID, id.toString());
         jObject.put(JSON_TITLE, title);
         jObject.put(JSON_BODY, body);
         jObject.put(JSON_DATE, date.getTime());
