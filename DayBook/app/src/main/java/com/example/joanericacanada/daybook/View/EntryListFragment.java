@@ -12,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.joanericacanada.daybook.EntryActivity;
 import com.example.joanericacanada.daybook.EntryKeeper;
 import com.example.joanericacanada.daybook.Model.EntryModel;
 import com.example.joanericacanada.daybook.R;
@@ -46,7 +45,7 @@ public class EntryListFragment extends ListFragment {
     public void onListItemClick(ListView l, View v,int pos, long id){
         EntryModel e = ((journalAdapter)getListAdapter()).getItem(pos);
 
-        Intent i = new Intent(getActivity(), EntryFragment.class);
+        Intent i = new Intent(getActivity(), EntryPagerActivity.class);
         i.putExtra(EntryFragment.ENTRY_ID, e.getId());
         startActivity(i);
     }
@@ -64,7 +63,7 @@ public class EntryListFragment extends ListFragment {
                 EntryModel entry = new EntryModel();
                 EntryKeeper.get(getActivity()).newEntry(entry);
 
-                Intent intent = new Intent(getActivity(), EntryActivity.class);
+                Intent intent = new Intent(getActivity(), EntryPagerActivity.class);
                 intent.putExtra(EntryFragment.ENTRY_ID, entry.getId());
                 startActivityForResult(intent, 0);
                 //startActivity(intent);
