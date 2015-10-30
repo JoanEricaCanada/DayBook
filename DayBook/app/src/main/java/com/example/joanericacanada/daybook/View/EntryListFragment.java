@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.joanericacanada.daybook.Activities.EntryPagerActivity;
 import com.example.joanericacanada.daybook.Controller.EntryKeeper;
 import com.example.joanericacanada.daybook.Model.EntryModel;
 import com.example.joanericacanada.daybook.R;

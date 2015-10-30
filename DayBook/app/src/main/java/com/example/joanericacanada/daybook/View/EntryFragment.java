@@ -28,15 +28,6 @@ public class EntryFragment extends Fragment {
     //VARIABLES
     private EntryModel entry;
 
-    /*public static EntryFragment newInstance(UUID id){
-        Bundle args = new Bundle();
-        args.putSerializable(ENTRY_ID, id);
-
-        EntryFragment fragment = new EntryFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }*/
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
