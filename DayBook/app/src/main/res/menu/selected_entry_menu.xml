@@ -4,4 +4,6 @@
 
     <item android:id="@+id/edit_entry" android:title="@string/edit_entry"
         android:orderInCategory="100" app:showAsAction="ifRoom" />
+    <item android:id="@+id/delete_entry" android:title="@string/delete_entry"
+        android:orderInCategory="100" app:showAsAction="ifRoom" />
 </menu>

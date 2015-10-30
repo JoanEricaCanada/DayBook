@@ -28,7 +28,6 @@ public class SelectedEntryFragment extends Fragment {
 
     //WIDGETS
     private TextView txtTitle, txtBody, txtDate;
-    private ArrayList<EntryModel> journal;
     private EntryModel entry;
 
     public static SelectedEntryFragment newInstance(UUID id){
@@ -80,6 +79,10 @@ public class SelectedEntryFragment extends Fragment {
                 startActivityForResult(intent, 0);
                 //startActivity(intent);
                 return true;
+            case R.id.delete_entry:
+                ArrayList<EntryModel> journal = EntryKeeper.get(getActivity()).getEntries();
+                journal.remove(entry);
+                getActivity().finish();
             default:
                 return super.onOptionsItemSelected(item);
         }
