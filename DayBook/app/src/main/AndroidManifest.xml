@@ -16,7 +16,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".View.EntryPagerActivity">
-
+        </activity>
+        <activity android:name=".View.EntryActivity">
         </activity>
     </application>
 
