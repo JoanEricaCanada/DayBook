@@ -6,8 +6,9 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 
-import com.example.joanericacanada.daybook.EntryKeeper;
+import com.example.joanericacanada.daybook.Controller.EntryKeeper;
 import com.example.joanericacanada.daybook.Model.EntryModel;
 import com.example.joanericacanada.daybook.R;
 
@@ -36,8 +37,8 @@ public class EntryPagerActivity extends FragmentActivity {
         entryPager.setAdapter(new FragmentStatePagerAdapter(fragmentManager) {
             @Override
             public Fragment getItem(int position) {
-                EntryModel entry = journal.get(position);
-                return EntryFragment.newInstance(entry.getId());
+                UUID id = journal.get(position).getId();
+                return SelectedEntryFragment.newInstance(id);
             }
 
             @Override
@@ -61,7 +62,9 @@ public class EntryPagerActivity extends FragmentActivity {
             }
         });
 
-            UUID id = (UUID)getIntent().getSerializableExtra(EntryFragment.ENTRY_ID);
+        UUID id = (UUID)getIntent().getSerializableExtra(SelectedEntryFragment.ENTRY_ID);
+        Log.e("UUID", id.toString());
+
         for(int i = 0; i < journal.size(); i++){
             if(journal.get(i).getId().equals(id)){
                 entryPager.setCurrentItem(i);

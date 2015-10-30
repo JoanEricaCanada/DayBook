@@ -16,23 +16,14 @@ public class EntryModel {
     private static final String JSON_BODY = "body";
     private static final String JSON_DATE = "date";
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
     //VARIABLES
     private String title, body;
-    private Date date;
+    private Date date = new Date();
     private UUID id;
     //for photo
 
     public EntryModel(){
         id = UUID.randomUUID();
-        date = new Date();
     }
 
     public EntryModel(JSONObject json) throws JSONException{
@@ -50,6 +41,10 @@ public class EntryModel {
         jObject.put(JSON_DATE, date.getTime());
 
         return jObject;
+    }
+
+    public UUID getId() {
+        return id;
     }
 
     public String getBody() {

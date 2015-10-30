@@ -6,13 +6,14 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
 import com.example.joanericacanada.daybook.R;
+import com.example.joanericacanada.daybook.View.EntryListFragment;
 
 /**
- * Created by joanericacanada on 10/30/15.
+ * Created by joanericacanada on 10/29/15.
  */
-public class EntryActivity extends FragmentActivity {
+public class EntryListActivity extends FragmentActivity {
     protected Fragment createFragment(){
-        return new EntryFragment();
+        return new EntryListFragment();
     }
 
     @Override

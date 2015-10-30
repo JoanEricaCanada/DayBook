@@ -1,4 +1,4 @@
-package com.example.joanericacanada.daybook;
+package com.example.joanericacanada.daybook.Controller;
 
 import android.content.Context;
 import android.util.Log;

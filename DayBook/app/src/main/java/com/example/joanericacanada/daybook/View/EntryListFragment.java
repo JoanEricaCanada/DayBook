@@ -12,12 +12,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.joanericacanada.daybook.EntryKeeper;
+import com.example.joanericacanada.daybook.Controller.EntryKeeper;
 import com.example.joanericacanada.daybook.Model.EntryModel;
 import com.example.joanericacanada.daybook.R;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Created by joanericacanada on 10/29/15.
@@ -33,8 +35,18 @@ public class EntryListFragment extends ListFragment {
         setHasOptionsMenu(true);
         journal = EntryKeeper.get(getActivity()).getEntries();
         journalAdapter jAdapter = new journalAdapter(journal);
+
+        //default sort: by date
+        Collections.sort(journal, new Comparator<EntryModel>() {
+            @Override
+            public int compare(EntryModel lhs, EntryModel rhs) {
+                return rhs.getDate().compareTo(lhs.getDate());
+            }
+        });
+
         setListAdapter(jAdapter);
     }
+
     @Override
     public void onResume(){
         super.onResume();
@@ -42,12 +54,17 @@ public class EntryListFragment extends ListFragment {
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        ((journalAdapter)getListAdapter()).notifyDataSetChanged();
+    }
+
+    @Override
     public void onListItemClick(ListView l, View v,int pos, long id){
         EntryModel e = ((journalAdapter)getListAdapter()).getItem(pos);
 
         Intent i = new Intent(getActivity(), EntryPagerActivity.class);
-        i.putExtra(EntryFragment.ENTRY_ID, e.getId());
-        startActivity(i);
+        i.putExtra(SelectedEntryFragment.ENTRY_ID, e.getId());
+        startActivityForResult(i,0);
     }
 
     @Override

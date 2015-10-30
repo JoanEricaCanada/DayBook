@@ -10,14 +10,10 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.joanericacanada.daybook.DayBookStorage;
-import com.example.joanericacanada.daybook.EntryKeeper;
+import com.example.joanericacanada.daybook.Controller.EntryKeeper;
 import com.example.joanericacanada.daybook.Model.EntryModel;
 import com.example.joanericacanada.daybook.R;
 
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.text.DateFormat;
 import java.util.UUID;
 
@@ -30,23 +26,27 @@ public class EntryFragment extends Fragment {
     private EditText edtTitle, edtBody;
 
     //VARIABLES
-    DayBookStorage dbs;
-    EntryModel entry;
+    private EntryModel entry;
+
+    /*public static EntryFragment newInstance(UUID id){
+        Bundle args = new Bundle();
+        args.putSerializable(ENTRY_ID, id);
+
+        EntryFragment fragment = new EntryFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }*/
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        UUID id = (UUID)getActivity().getIntent().getSerializableExtra(ENTRY_ID);
+        entry = EntryKeeper.get(getActivity()).getEntry(id);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.create_entry_fragment, parent, false);
-
-        dbs = new DayBookStorage(getContext(), "daybook.json");
-
-        /*
-        try {
-            entry = dbs.loadEntry();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
 
         if(entry == null)
             entry = new EntryModel();
@@ -97,32 +97,8 @@ public class EntryFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        UUID id = (UUID)getActivity().getIntent()
-                .getSerializableExtra(ENTRY_ID);
-        entry = EntryKeeper.get(getActivity()).getEntry(id);
-    }
-
-    public static EntryFragment newInstance(UUID id){
-        Bundle args = new Bundle();
-        args.putSerializable(ENTRY_ID, id);
-
-        EntryFragment fragment = new EntryFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
-
-        try {
-            dbs.saveEntry(entry);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        EntryKeeper.get(getActivity()).saveEntries();
     }
 }
