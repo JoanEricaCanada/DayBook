@@ -24,7 +24,7 @@ public class PasswordManager {
     }
 
     public void setPassword(String password){
-        passwordPrefs.edit().putString(KEY_WORD, password);
+        passwordPrefs.edit().putString(KEY_WORD, password).commit();
     }
 
     public static PasswordManager get(Context c){

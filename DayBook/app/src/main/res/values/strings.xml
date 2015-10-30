@@ -17,4 +17,9 @@
     <string name="cpassword_title">Change New Password</string>
     <string name="create_password">Create Password</string>
     <string name="change_password">Change Password</string>
+    <string name="sort_text">Sort</string>
+    <array name="sorter">
+        <item>by Date</item>
+        <item>by Title</item>
+    </array>
 </resources>

@@ -33,7 +33,9 @@ public class PasswordLockFragment extends Fragment {
         btnUnlock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(edtPassword.getText().equals(PasswordManager.get(getActivity()).getPassword())){
+                if(edtPassword.getText().toString().equals(PasswordManager.get(getActivity()).getPassword())){
+                    Toast.makeText(getContext(), "Unlock successful!", Toast.LENGTH_SHORT).show();
+
                     Intent intent = new Intent(getActivity(), EntryListActivity.class);
                     startActivity(intent);
                     getActivity().finish();

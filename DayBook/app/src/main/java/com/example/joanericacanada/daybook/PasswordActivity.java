@@ -11,11 +11,19 @@ import com.example.joanericacanada.daybook.Model.PasswordManager;
  * Created by joanericacanada on 10/30/15.
  */
 public class PasswordActivity extends FragmentActivity {
+    //TAGS
+    public static final String CHANGE_PASSWORD = "change";
+
     protected Fragment createFragment(){
-        if(PasswordManager.get(this).getPassword() == null){
-            return new PasswordWizardFragment();
-        }else
-            return new PasswordLockFragment();
+        Boolean toChange = getIntent().getBooleanExtra(CHANGE_PASSWORD, false);
+        if(toChange)
+            return new PasswordChangeFragment();
+        else{
+            if(PasswordManager.get(this).getPassword() == null)
+                return new PasswordWizardFragment();
+            else
+                return new PasswordLockFragment();
+        }
     }
 
     @Override

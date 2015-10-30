@@ -1,5 +1,7 @@
 package com.example.joanericacanada.daybook.View;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -11,10 +13,13 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.joanericacanada.daybook.Activities.EntryActivity;
 import com.example.joanericacanada.daybook.Activities.EntryPagerActivity;
 import com.example.joanericacanada.daybook.Controller.EntryKeeper;
 import com.example.joanericacanada.daybook.Model.EntryModel;
+import com.example.joanericacanada.daybook.PasswordActivity;
 import com.example.joanericacanada.daybook.R;
 
 import java.text.DateFormat;
@@ -29,13 +34,14 @@ public class EntryListFragment extends ListFragment {
 
     //VARIABLES
     private ArrayList<EntryModel> journal;
+    private journalAdapter jAdapter;
     
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         journal = EntryKeeper.get(getActivity()).getEntries();
-        journalAdapter jAdapter = new journalAdapter(journal);
+        jAdapter = new journalAdapter(journal);
 
         //default sort: by date
         Collections.sort(journal, new Comparator<EntryModel>() {
@@ -46,6 +52,7 @@ public class EntryListFragment extends ListFragment {
         });
 
         setListAdapter(jAdapter);
+        Toast.makeText(getContext(), "Welcome to DayBook!", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -65,7 +72,7 @@ public class EntryListFragment extends ListFragment {
 
         Intent i = new Intent(getActivity(), EntryPagerActivity.class);
         i.putExtra(SelectedEntryFragment.ENTRY_ID, e.getId());
-        startActivityForResult(i,0);
+        startActivityForResult(i, 0);
     }
 
     @Override
@@ -81,14 +88,50 @@ public class EntryListFragment extends ListFragment {
                 EntryModel entry = new EntryModel();
                 EntryKeeper.get(getActivity()).newEntry(entry);
 
-                Intent intent = new Intent(getActivity(), EntryPagerActivity.class);
+                Intent intent = new Intent(getActivity(), EntryActivity.class);
                 intent.putExtra(EntryFragment.ENTRY_ID, entry.getId());
-                startActivityForResult(intent, 0);
-                //startActivity(intent);
+                startActivity(intent);
                 return true;
+            case R.id.change_password:
+                Intent intentPassword = new Intent(getActivity(), PasswordActivity.class);
+                intentPassword.putExtra(PasswordActivity.CHANGE_PASSWORD, true);
+                startActivity(intentPassword);
+            case R.id.sort:
+                sortList();
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void sortList(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.sort_text).setItems(R.array.sorter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case 0:
+                        //default sort: by date
+                        Collections.sort(journal, new Comparator<EntryModel>() {
+                            @Override
+                            public int compare(EntryModel lhs, EntryModel rhs) {
+                                return rhs.getDate().compareTo(lhs.getDate());
+                            }
+                        });
+                        ((journalAdapter)getListAdapter()).notifyDataSetChanged();
+                        break;
+                    case 1:
+                        //default sort: by title
+                        Collections.sort(journal, new Comparator<EntryModel>() {
+                            @Override
+                            public int compare(EntryModel lhs, EntryModel rhs) {
+                                return lhs.getTitle().compareTo(rhs.getTitle());
+                            }
+                        });
+                        ((journalAdapter)getListAdapter()).notifyDataSetChanged();
+                        break;
+                }
+            }
+        }).show();
     }
 
     private class journalAdapter extends ArrayAdapter<EntryModel> {

@@ -84,6 +84,7 @@ public class SelectedEntryFragment extends Fragment {
                 ArrayList<EntryModel> journal = EntryKeeper.get(getActivity()).getEntries();
                 journal.remove(entry);
                 getActivity().finish();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
