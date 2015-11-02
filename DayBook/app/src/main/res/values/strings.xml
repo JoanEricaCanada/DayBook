@@ -2,7 +2,6 @@
     <string name="app_name">DayBook</string>
 
     <string name="text_title">Entry Title: </string>
-    <string name="action_settings">Settings</string>
     <string name="entry_hint">Write journal entry here</string>
     <string name="password_hint">Enter password</string>
     <string name="content_desc">Entry photo attachment</string>
@@ -14,12 +13,14 @@
     <string name="new_password">New Password</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="password_title">Create New Password</string>
-    <string name="cpassword_title">Change New Password</string>
+    <string name="change_password_title">Change Password</string>
     <string name="create_password">Create Password</string>
     <string name="change_password">Change Password</string>
+    <string name="change_password_success">Password changed successfully!</string>
+    <string name="new_password_mismatched">New Password Mismatched! Please try again.</string>
+    <string name="current_password_incorrect">Incorrect password! Please try again.</string>
+    <string name="current_password_correct">Unlock successful!</string>
+    <string name="create_password_success">Password created successful!</string>
     <string name="sort_text">Sort</string>
-    <array name="sorter">
-        <item>by Date</item>
-        <item>by Title</item>
-    </array>
+    <string name="input_null">Please fill out the fields.</string>
 </resources>
