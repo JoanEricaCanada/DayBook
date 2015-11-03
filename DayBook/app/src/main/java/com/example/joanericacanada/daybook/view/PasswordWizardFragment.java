@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.joanericacanada.daybook.R;
-import com.example.joanericacanada.daybook.view.EntryListActivity;
 import com.example.joanericacanada.daybook.model.PasswordManager;
 
 /**
@@ -37,7 +36,8 @@ public class PasswordWizardFragment extends Fragment {
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Boolean isMatched = edtNewPassword.getText().toString().equals(edtConfirmPassword.getText().toString());
+                Boolean isMatched = PasswordManager.get(getActivity()).validatePassword(edtNewPassword.getText().toString(),
+                        edtConfirmPassword.getText().toString());
                 if (isMatched) {
                     PasswordManager.get(getActivity()).setPassword(edtNewPassword.getText().toString());
                     Toast.makeText(getContext(), R.string.create_password_success, Toast.LENGTH_SHORT).show();

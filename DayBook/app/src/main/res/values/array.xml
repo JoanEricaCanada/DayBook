@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="sorter">
-        <item>by Date</item>
-        <item>by Title</item>
+        <item type = "string">by Date</item>
+        <item type = "string">by Title</item>
+    </array>
+    <array name="filter">
+        <item type = "string">None</item>
+        <item type = "string">Month</item>
+        <item type = "string">Week</item>
+        <item type = "string">Year</item>
     </array>
 </resources>

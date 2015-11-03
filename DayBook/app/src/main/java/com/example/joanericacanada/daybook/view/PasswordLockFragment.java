@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.joanericacanada.daybook.R;
-import com.example.joanericacanada.daybook.view.EntryListActivity;
 import com.example.joanericacanada.daybook.model.PasswordManager;
 
 /**

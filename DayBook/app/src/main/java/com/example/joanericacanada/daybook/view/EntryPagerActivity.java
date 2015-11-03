@@ -8,10 +8,9 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 
+import com.example.joanericacanada.daybook.R;
 import com.example.joanericacanada.daybook.controller.EntryKeeper;
 import com.example.joanericacanada.daybook.model.Entry;
-import com.example.joanericacanada.daybook.R;
-import com.example.joanericacanada.daybook.view.SelectedEntryFragment;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -21,11 +20,6 @@ import java.util.UUID;
  */
 public class EntryPagerActivity extends FragmentActivity {
     private ArrayList<Entry> journal;
-
-    /*@Override
-    public int getItemPosition(Object object){
-        return 0;
-    }*/
     
     @Override
     public void onCreate(Bundle savedInstanceState){

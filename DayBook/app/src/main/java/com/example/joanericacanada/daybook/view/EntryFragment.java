@@ -10,9 +10,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.joanericacanada.daybook.R;
 import com.example.joanericacanada.daybook.controller.EntryKeeper;
 import com.example.joanericacanada.daybook.model.Entry;
-import com.example.joanericacanada.daybook.R;
 
 import java.text.DateFormat;
 import java.util.UUID;
@@ -83,6 +83,16 @@ public class EntryFragment extends Fragment {
         return view;
     }
 
+    /*protected void getActivity().exitByBackKey(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Entry Title")
+                .setMessage("There is no title for this entry. Please fill out the title field.")
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                }).show();
+    }*/
     @Override
     public void onPause() {
         super.onPause();
