@@ -191,6 +191,13 @@ public class EntryListFragment extends ListFragment{
                     }
                 }
                 break;
+            case 3: //Filter by year
+                for (Entry e : journal){
+                    entryDate.setTime(e.getDate());
+                    if (entryDate.get(Calendar.YEAR) == recent.get(Calendar.YEAR)) {
+                        result.add(e);
+                    }
+                }
         }
         setListAdapter(new journalAdapter(result));
         ((journalAdapter)getListAdapter()).notifyDataSetChanged();
