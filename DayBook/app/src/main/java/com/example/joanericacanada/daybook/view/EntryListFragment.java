@@ -181,6 +181,16 @@ public class EntryListFragment extends ListFragment{
                     }
                 }
                 break;
+            case 2: //Filter by Week
+                for (Entry e : journal){
+                    entryDate.setTime(e.getDate());
+                    if (entryDate.get(Calendar.YEAR) == recent.get(Calendar.YEAR)
+                            & entryDate.get(Calendar.MONTH) == recent.get(Calendar.MONTH)
+                            & entryDate.get(Calendar.WEEK_OF_MONTH) == recent.get(Calendar.WEEK_OF_MONTH)) {
+                        result.add(e);
+                    }
+                }
+                break;
         }
         setListAdapter(new journalAdapter(result));
         ((journalAdapter)getListAdapter()).notifyDataSetChanged();
