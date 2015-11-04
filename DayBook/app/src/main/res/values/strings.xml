@@ -8,7 +8,6 @@
     <string name="add_entry">New Entry</string>
     <string name="edit_entry">Edit Entry</string>
     <string name="delete_entry">Delete Entry</string>
-    <string name="export_entry">Export Entry</string>
     <string name="enter_password">Unlock Journal</string>
     <string name="current_password">Current Password</string>
     <string name="new_password">New Password</string>
@@ -23,13 +22,6 @@
     <string name="current_password_correct">Unlock successful!</string>
     <string name="create_password_success">Password created successful!</string>
     <string name="sort_text">Sort</string>
-    <string name="input_null">Please fill out the fields.</string>\
-    <string name="search_hint">Search title</string>
+    <string name="input_null">Please fill out the fields.</string>
     <string name="filter_label">Filter by</string>
-    <string name="export">Export entry via</string>
-    <string name="subject">%$s</string>
-    <string name="entry">
-        %1$s \nDate: %2$s \n\t%3$s
-    </string>
-
 </resources>

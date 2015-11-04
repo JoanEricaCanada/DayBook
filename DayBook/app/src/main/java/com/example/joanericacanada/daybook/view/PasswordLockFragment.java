@@ -16,10 +16,9 @@ import com.example.joanericacanada.daybook.model.PasswordManager;
 /**
  * Created by joanericacanada on 10/30/15.
  */
-public class PasswordLockFragment extends Fragment{
-    private String password;
-    private View view;
-    private EditText edtPassword;
+public class PasswordLockFragment extends Fragment {
+    //WIDGETS
+    EditText edtPassword;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,17 +27,14 @@ public class PasswordLockFragment extends Fragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.password_layout, parent, false);
+        View view = inflater.inflate(R.layout.password_layout, parent, false);
 
         edtPassword = (EditText)view.findViewById(R.id.edtPassword);
         Button btnUnlock = (Button)view.findViewById(R.id.btnUnlock);
         btnUnlock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                password = edtPassword.getText().toString();
-                PasswordManager pm = PasswordManager.get(getContext());
-
-                if (pm.validatePassword(password)) {
+                if(PasswordManager.get(getContext()).validatePassword(edtPassword.getText().toString())){
                     Toast.makeText(getContext(), R.string.current_password_correct, Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getActivity(), EntryListActivity.class);
                     startActivity(intent);
