@@ -4,13 +4,25 @@
 *.class
 bin/
 gen/
+out/
 .gradle/
 build/
+.classpath
+.project
+.settings
+project.properties
 local.properties
 proguard/
 *.log
 .metadata
 .recommenders
+*.ipr
+*.iws
+.idea
+*.iml
+.DS_Store
+/.DS_Store
+*/*/.DS_Store
 
 
 
