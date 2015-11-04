@@ -1,6 +1,7 @@
 package com.example.joanericacanada.daybook.controller;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.joanericacanada.daybook.model.Entry;
 
@@ -32,7 +33,6 @@ public class DayBookStorage {
         this.filename = filename;
     }
 
-    // saves entries to JSON
     public void saveEntry(ArrayList<Entry> journal) throws JSONException, IOException{
         JSONArray jArr = new JSONArray();
         for(Entry e : journal)
@@ -43,15 +43,15 @@ public class DayBookStorage {
             OutputStream outStream = context.openFileOutput(filename, Context.MODE_PRIVATE);
             write = new OutputStreamWriter(outStream);
             write.write(jArr.toString());
+            Log.e("JSON", "in");
         }catch (FileNotFoundException e) {
-            //do nothing
+            Log.e("file", "null");
         }finally {
             if(write != null)
                 write.close();
         }
     }
 
-    //loads entries from JSON file
     public ArrayList<Entry> loadEntry() throws JSONException, IOException{
         ArrayList<Entry> journal = new ArrayList<>();
         BufferedReader bReader = null;
@@ -65,6 +65,7 @@ public class DayBookStorage {
             while ((line = bReader.readLine()) != null)
                 sBuild.append(line);
             JSONArray arr = (JSONArray) new JSONTokener(sBuild.toString()).nextValue();
+            Log.e("DBStore", Integer.toString(arr.length()));
 
             for(int count = 0; count < arr.length(); count++)
                 journal.add(new Entry(arr.getJSONObject(count)));

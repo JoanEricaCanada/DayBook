@@ -2,15 +2,4 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-
-    <dimen name="password_title_Tmargin">20dp</dimen>
-    <dimen name="password_title_Bmargin">5dp</dimen>
-    <dimen name="margin">10dp</dimen>
-    <dimen name="text_size">25sp</dimen>
-    <dimen name="width_date">100dp</dimen>
-    <dimen name="width_title">260dp</dimen>
-    <dimen name="relative_height">61dp</dimen>
-    <dimen name="spinner_width">99dp</dimen>
-    <dimen name="linear_height">56dp</dimen>
-    <dimen name="filter">82dp</dimen>
 </resources>

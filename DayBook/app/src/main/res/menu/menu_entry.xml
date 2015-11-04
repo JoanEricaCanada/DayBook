@@ -1,18 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".EntryListActivity">
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".EntryListActivity">
 
-    <item android:id="@+id/new_entry"
-        android:title="@string/add_entry"
-        android:orderInCategory="100"
-        app:showAsAction="ifRoom" />
-    <item android:id="@+id/change_password"
-        android:title="@string/change_password"
-        android:orderInCategory="100"
-        app:showAsAction="ifRoom" />
-    <item android:id="@+id/sort"
-        android:title="@string/sort_text"
-        android:orderInCategory="100"
-        app:showAsAction="ifRoom" />
+    <item android:id="@+id/new_entry" android:title="@string/add_entry"
+        android:orderInCategory="100" app:showAsAction="ifRoom" />
+    <item android:id="@+id/change_password" android:title="@string/change_password"
+        android:orderInCategory="100" app:showAsAction="ifRoom" />
+    <item android:id="@+id/sort" android:title="@string/sort_text"
+        android:orderInCategory="100" app:showAsAction="ifRoom" />
 </menu>
