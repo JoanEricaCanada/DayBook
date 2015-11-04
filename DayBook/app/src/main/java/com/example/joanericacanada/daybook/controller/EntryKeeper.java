@@ -21,19 +21,16 @@ public class EntryKeeper {
     private ArrayList<Entry> journal;
 
     private EntryKeeper(Context context){
-        //Context contextApp = context;
         book = new DayBookStorage(context, FILENAME);
 
         try{
             journal = book.loadEntry();
-            Log.e("keeper", "loaded");
         }catch (Exception e){
             journal = new ArrayList<>();
-            Log.e("keeper", "not loaded");
         }
     }
 
-    public void newEntry(Entry e){
+    public void addEntry(Entry e){
         journal.add(e);
     }
 

@@ -2,7 +2,6 @@ package com.example.joanericacanada.daybook.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.joanericacanada.daybook.R;
@@ -33,10 +32,8 @@ public class PasswordManager {
     }
 
     public static PasswordManager get(Context c){
-        if(passwordManager == null) {
+        if(passwordManager == null)
             passwordManager = new PasswordManager(c.getApplicationContext());
-            Log.e("passwordManager", "null");
-        }
         return passwordManager;
     }
 

@@ -36,10 +36,14 @@ public class PasswordWizardFragment extends Fragment {
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Boolean isMatched = PasswordManager.get(getActivity()).validatePassword(edtNewPassword.getText().toString(),
-                        edtConfirmPassword.getText().toString());
+                String newPassword = edtNewPassword.getText().toString();
+                String confirmPassword = edtConfirmPassword.getText().toString();
+
+                PasswordManager pm = PasswordManager.get(getContext());
+                Boolean isMatched = pm.validatePassword(newPassword, confirmPassword);
+
                 if (isMatched) {
-                    PasswordManager.get(getActivity()).setPassword(edtNewPassword.getText().toString());
+                    pm.setPassword(edtNewPassword.getText().toString());
                     Toast.makeText(getContext(), R.string.create_password_success, Toast.LENGTH_SHORT).show();
 
                     Intent intent = new Intent(getActivity(), EntryListActivity.class);

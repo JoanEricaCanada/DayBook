@@ -29,14 +29,14 @@ public class EntryFragment extends Fragment {
         super.onCreate(savedInstanceState);
         UUID id = (UUID)getActivity().getIntent().getSerializableExtra(ENTRY_ID);
         entry = EntryKeeper.get(getActivity()).getEntry(id);
+
+        if(entry == null)
+            entry = new Entry();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.create_entry_fragment, parent, false);
-
-        if(entry == null)
-            entry = new Entry();
 
         String currentDate = DateFormat.getDateTimeInstance().format(entry.getDate());
         TextView txtDate = (TextView) view.findViewById(R.id.txtDate);
@@ -47,7 +47,7 @@ public class EntryFragment extends Fragment {
         edtTitle.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                //do nothing
             }
 
             @Override
@@ -57,7 +57,7 @@ public class EntryFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                //do nothing
             }
         });
 
@@ -66,7 +66,7 @@ public class EntryFragment extends Fragment {
         edtBody.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                //do nothing
             }
 
             @Override
@@ -76,26 +76,16 @@ public class EntryFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                //do nothing
             }
         });
 
         return view;
     }
-
-    /*protected void getActivity().exitByBackKey(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Entry Title")
-                .setMessage("There is no title for this entry. Please fill out the title field.")
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener(){
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                }).show();
-    }*/
     @Override
     public void onPause() {
         super.onPause();
-        EntryKeeper.get(getActivity()).saveEntries();
+        if(!(entry.getBody().equals("") && entry.getTitle().equals("")))
+            EntryKeeper.get(getActivity()).saveEntries();
     }
 }
