@@ -19,42 +19,43 @@ import java.util.UUID;
  * Created by joanericacanada on 10/29/15.
  */
 public class EntryPagerActivity extends FragmentActivity {
-    private ArrayList<Entry> journal;
-    
+    private ArrayList<Entry> mJournal;
+    private ViewPager entryPager;
+
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
-        ViewPager entryPager = new ViewPager(this);
+        entryPager = new ViewPager(this);
         entryPager.setId(R.id.viewPager);
         setContentView(entryPager);
 
-        journal = EntryKeeper.get(this).getEntries();
+        mJournal = EntryKeeper.get(this).getEntries();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         entryPager.setAdapter(new FragmentStatePagerAdapter(fragmentManager) {
             @Override
             public Fragment getItem(int position) {
-                Entry entry = journal.get(position);
+                Entry entry = mJournal.get(position);
                 return SelectedEntryFragment.newInstance(entry.getId());
             }
 
             @Override
             public int getCount() {
-                return journal.size();
+                return mJournal.size();
             }
         });
-        entryPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        entryPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageScrollStateChanged(int state) {
-
+                //do nothing
             }
 
             public void onPageScrolled(int pos, float posOffset, int posOffsetPixels) {
-
+                //do nothing
             }
 
             public void onPageSelected(int pos) {
-                Entry entry = journal.get(pos);
+                Entry entry = mJournal.get(pos);
                 if (entry.getTitle() != null)
                     setTitle(entry.getTitle());
             }
@@ -63,11 +64,17 @@ public class EntryPagerActivity extends FragmentActivity {
         UUID id = (UUID)getIntent().getSerializableExtra(SelectedEntryFragment.ENTRY_ID);
         Log.e("UUID", id.toString());
 
-        for(int i = 0; i < journal.size(); i++){
-            if(journal.get(i).getId().equals(id)){
+        for(int i = 0; i < mJournal.size(); i++){
+            if(mJournal.get(i).getId().equals(id)){
                 entryPager.setCurrentItem(i);
                 break;
             }
         }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
     }
 }

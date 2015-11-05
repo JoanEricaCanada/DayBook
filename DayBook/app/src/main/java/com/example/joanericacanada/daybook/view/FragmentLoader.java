@@ -10,6 +10,7 @@ import com.example.joanericacanada.daybook.R;
 /**
  * Created by joanericacanada on 11/2/15.
  */
+
 public abstract class FragmentLoader extends FragmentActivity {
     protected abstract Fragment createFragment();
 

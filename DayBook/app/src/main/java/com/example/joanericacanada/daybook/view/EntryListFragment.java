@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -32,26 +35,39 @@ import java.util.Date;
  * Created by joanericacanada on 10/29/15.
  */
 public class EntryListFragment extends ListFragment{
-
     //VARIABLES
-    private ArrayList<Entry> journal, result;
-    private View header;
+    private ArrayList<Entry> mJournal;
+    private ArrayList<Entry> mResult = new ArrayList<>();
+
+    //WIDGETS
+    private Spinner mSpinner;
+    private EditText mEditSearch;
+    private journalAdapter mAdapter;
 
     @Override
     public void onResume(){
         super.onResume();
-        ((journalAdapter) getListAdapter()).notifyDataSetChanged();
+        Entry entry = mJournal.get(mJournal.size()-1);
+        if (entry.getTitle() == null) {
+            if(entry.getBody() == null)
+                mJournal.remove(entry);
+            else
+                entry.setTitle("(No Title)");
+        }
+        chooseFilter(mSpinner.getSelectedItemPosition());
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        result = journal = EntryKeeper.get(getActivity()).getEntries();
-        //jAdapter = new journalAdapter(journal);
+
+        mJournal = EntryKeeper.get(getActivity()).getEntries();
+        mResult.addAll(mJournal);
 
         //default sort: by date
-        Collections.sort(result, new Comparator<Entry>() {
+        Collections.sort(mResult, new Comparator<Entry>() {
             @Override
             public int compare(Entry lhs, Entry rhs) {
                 return rhs.getDate().compareTo(lhs.getDate());
@@ -65,32 +81,57 @@ public class EntryListFragment extends ListFragment{
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        header = getActivity().getLayoutInflater().inflate(R.layout.entry_list_fragment, null);
+        View header = View.inflate(getContext(), R.layout.entry_list_fragment, null);
 
-        Spinner spinner = (Spinner)header.findViewById(R.id.spinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item,
-                getResources().getStringArray(R.array.filter) );
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mEditSearch = (EditText)header.findViewById(R.id.edtSearch);
+        mEditSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().equals(""))
+                    chooseFilter(mSpinner.getSelectedItemPosition());
+                else {
+                    mResult = new ArrayList<>();
+                    mResult.addAll(search(s));
+                }
+                setListAdapter(new journalAdapter(mResult));
+                mAdapter.notifyDataSetChanged();
+                mEditSearch.requestFocus();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //do nothing
+            }
+        });
+        mSpinner = (Spinner) header.findViewById(R.id.spinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_layout,
+                R.id.txtItem, getResources().getStringArray(R.array.filter));
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                filter(position);
+                chooseFilter(position);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+                //do nothing
             }
         });
-        spinner.setAdapter(adapter);
+        mSpinner.setAdapter(adapter);
 
         this.getListView().addHeaderView(header);
-        setListAdapter(new journalAdapter(result));
+        mAdapter = new journalAdapter(mResult);
+        setListAdapter(mAdapter);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         ((journalAdapter)getListAdapter()).notifyDataSetChanged();
-        //((journalAdapter)getListAdapter()).getFilter().filter(DateFormat.getDateInstance().format(new Date()));
     }
 
     @Override
@@ -110,19 +151,20 @@ public class EntryListFragment extends ListFragment{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
+        Intent i;
         switch (item.getItemId()){
-            case R.id.new_entry:
+            case R.id.new_entry: // loads new entry
                 Entry entry = new Entry();
-                EntryKeeper.get(getActivity()).newEntry(entry);
+                EntryKeeper.get(getActivity()).addEntry(entry);
 
-                Intent intent = new Intent(getActivity(), EntryActivity.class);
-                intent.putExtra(EntryFragment.ENTRY_ID, entry.getId());
-                startActivity(intent);
+                i = new Intent(getActivity(), EntryActivity.class);
+                i.putExtra(EntryFragment.ENTRY_ID, entry.getId());
+                startActivity(i);
                 return true;
-            case R.id.change_password:
-                Intent intentPassword = new Intent(getActivity(), PasswordActivity.class);
-                intentPassword.putExtra(PasswordActivity.CHANGE_PASSWORD, true);
-                startActivity(intentPassword);
+            case R.id.change_password: // change password
+                i = new Intent(getActivity(), PasswordActivity.class);
+                i.putExtra(PasswordActivity.CHANGE_PASSWORD, true);
+                startActivity(i);
                 return true;
             case R.id.sort:
                 sortList();
@@ -131,87 +173,89 @@ public class EntryListFragment extends ListFragment{
         return super.onOptionsItemSelected(item);
     }
 
+    // sort list by date or title
     private void sortList(){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.sort_text).setItems(R.array.sorter, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which){
-                    case 0: //default sort: by date
-                        Collections.sort(result, new Comparator<Entry>() {
-                            @Override
-                            public int compare(Entry lhs, Entry rhs) {
-                                return rhs.getDate().compareTo(lhs.getDate());
-                            }
-                        });
-                        ((journalAdapter)getListAdapter()).notifyDataSetChanged();
-                        break;
-                    case 1: //default sort: by title
-                        Collections.sort(result, new Comparator<Entry>() {
-                            @Override
-                            public int compare(Entry lhs, Entry rhs) {
-                                return lhs.getTitle().compareTo(rhs.getTitle());
-                            }
-                        });
-                        ((journalAdapter)getListAdapter()).notifyDataSetChanged();
-                        break;
-                }
+            public void onClick(DialogInterface dialog, final int which) {
+                Collections.sort(mResult, new Comparator<Entry>() {
+                    @Override
+                    public int compare(Entry lhs, Entry rhs) {
+                        if(which == 0)
+                            return rhs.getDate().compareTo(lhs.getDate());
+                        else
+                            return lhs.getTitle().compareTo(rhs.getTitle());
+                    }
+                });
+                ((journalAdapter)getListAdapter()).notifyDataSetChanged();
             }
         }).show();
     }
 
-    private void filter(int choice){
-        result = new ArrayList<>();
+    // search list by keyword
+    private ArrayList<Entry> search(CharSequence cs){
+        ArrayList<Entry> searchResult = new ArrayList<>();
+        for(Entry e : mJournal) {
+            if (e.getTitle().contains(cs))
+                searchResult.add(e);
+        }
+        return searchResult;
+    }
+
+    // filter listview by date: month, week, year
+    private void chooseFilter(int choice){
         Calendar recent= Calendar.getInstance();
         Calendar entryDate= Calendar.getInstance();
+        mResult = new ArrayList<>();
 
-        recent.setTime(new Date());
+        if(choice == 0)
+            mResult.addAll(mJournal);
+        else{
+            ArrayList<Entry> temp = new ArrayList<>();
 
-        switch (choice){
-            case 0: //No Filter
-                if(result != null)
-                    result.addAll(journal);
-                break;
-            case 1: //Filter by Month
-                for (Entry e : journal){
+            temp.addAll(mJournal);
+            recent.setTime(new Date());
+
+            for(int i = 1; i <= choice; i++){
+                for(Entry e : temp) {
                     entryDate.setTime(e.getDate());
-                    if (entryDate.get(Calendar.YEAR) == recent.get(Calendar.YEAR)
-                            & entryDate.get(Calendar.MONTH) == recent.get(Calendar.MONTH)) {
-                        result.add(e);
+                    switch (i) {
+                        case 1: // filter by year
+                            if (entryDate.get(Calendar.YEAR) == recent.get(Calendar.YEAR))
+                                mResult.add(e);
+                            break;
+                        case 2: // filter by month
+                            if (entryDate.get(Calendar.MONTH) == recent.get(Calendar.MONTH))
+                                mResult.add(e);
+                            break;
+                        case 3: // filter by week
+                            if (entryDate.get(Calendar.WEEK_OF_MONTH) == recent.get(Calendar.WEEK_OF_MONTH))
+                                mResult.add(e);
+                            break;
                     }
                 }
-                break;
-            case 2: //Filter by Week
-                for (Entry e : journal){
-                    entryDate.setTime(e.getDate());
-                    if (entryDate.get(Calendar.YEAR) == recent.get(Calendar.YEAR)
-                            & entryDate.get(Calendar.MONTH) == recent.get(Calendar.MONTH)
-                            & entryDate.get(Calendar.WEEK_OF_MONTH) == recent.get(Calendar.WEEK_OF_MONTH)) {
-                        result.add(e);
-                    }
+                if (i != choice){
+                    temp = new ArrayList<>();
+                    temp.addAll(mResult);
+                    mResult = new ArrayList<>();
                 }
-                break;
-            case 3: //Filter by year
-                for (Entry e : journal){
-                    entryDate.setTime(e.getDate());
-                    if (entryDate.get(Calendar.YEAR) == recent.get(Calendar.YEAR)) {
-                        result.add(e);
-                    }
-                }
+            }
         }
-        setListAdapter(new journalAdapter(result));
+        setListAdapter(new journalAdapter(mResult));
         ((journalAdapter)getListAdapter()).notifyDataSetChanged();
     }
 
+    //custom array list adapter
     private class journalAdapter extends ArrayAdapter<Entry>{
-        public journalAdapter(ArrayList<Entry> journal){
-            super(getActivity(), R.layout.entry_list_fragment, journal);
+        public journalAdapter(ArrayList<Entry> mJournal){
+            super(getActivity(), R.layout.entry_list_fragment, R.id.listView, mJournal);
         }
 
         @Override
         public View getView(int pos, View convertView, ViewGroup parent){
             if (convertView == null){
-                convertView = getActivity().getLayoutInflater().inflate(R.layout.list_entry_layout, null);
+                convertView = View.inflate(getContext(), R.layout.list_entry_layout, null);
             }
 
             Entry entry = getItem(pos);

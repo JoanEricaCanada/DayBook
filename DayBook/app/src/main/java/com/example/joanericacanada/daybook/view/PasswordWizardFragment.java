@@ -17,9 +17,6 @@ import com.example.joanericacanada.daybook.model.PasswordManager;
  * Created by joanericacanada on 10/30/15.
  */
 public class PasswordWizardFragment extends Fragment {
-    private EditText edtNewPassword;
-    private EditText edtConfirmPassword;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,17 +26,21 @@ public class PasswordWizardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.password_wizard_layout, parent, false);
 
-        edtNewPassword = (EditText) view.findViewById(R.id.edtNewPassword);
-        edtConfirmPassword = (EditText) view.findViewById(R.id.edtConfirmPassword);
+        final EditText edtNewPassword = (EditText) view.findViewById(R.id.edtNewPassword);
+        final EditText edtConfirmPassword = (EditText) view.findViewById(R.id.edtConfirmPassword);
 
         Button btnCreate = (Button)view.findViewById(R.id.btnCreate);
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Boolean isMatched = PasswordManager.get(getActivity()).validatePassword(edtNewPassword.getText().toString(),
-                        edtConfirmPassword.getText().toString());
+                String newPassword = edtNewPassword.getText().toString();
+                String confirmPassword = edtConfirmPassword.getText().toString();
+
+                PasswordManager pm = PasswordManager.get(getContext());
+                Boolean isMatched = pm.validatePassword(newPassword, confirmPassword);
+
                 if (isMatched) {
-                    PasswordManager.get(getActivity()).setPassword(edtNewPassword.getText().toString());
+                    pm.setPassword(newPassword);
                     Toast.makeText(getContext(), R.string.create_password_success, Toast.LENGTH_SHORT).show();
 
                     Intent intent = new Intent(getActivity(), EntryListActivity.class);

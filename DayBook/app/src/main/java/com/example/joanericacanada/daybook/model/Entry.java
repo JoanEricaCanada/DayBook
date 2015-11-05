@@ -20,7 +20,6 @@ public class Entry {
     private String title, body;
     private Date date = new Date();
     private UUID id;
-    //for photo
 
     public Entry(){
         id = UUID.randomUUID();
@@ -58,6 +57,8 @@ public class Entry {
     public Date getDate() {
         return date;
     }
+
+    public void setDate(Date date){ this.date = date;}
 
     public String getTitle() {
         return title;

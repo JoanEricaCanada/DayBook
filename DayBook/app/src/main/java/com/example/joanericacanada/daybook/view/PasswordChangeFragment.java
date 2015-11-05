@@ -16,7 +16,6 @@ import com.example.joanericacanada.daybook.model.PasswordManager;
  * Created by joanericacanada on 10/30/15.
  */
 public class PasswordChangeFragment extends Fragment {
-    //WIDGETS
     private EditText edtCurrentPassword, edtNewPassword, edtConfirmPassword;
 
     @Override
@@ -36,19 +35,25 @@ public class PasswordChangeFragment extends Fragment {
         btnChange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Boolean isCurrentPassword = PasswordManager.get(getContext()).validatePassword(
-                        edtCurrentPassword.getText().toString());
-                if (isCurrentPassword){
-                    Boolean isMatched = PasswordManager.get(getContext()).validatePassword(
-                            edtNewPassword.getText().toString(), edtConfirmPassword.getText().toString());
-                    if(isMatched) {
-                        PasswordManager.get(getActivity()).setPassword(edtNewPassword.getText().toString());
-                        Toast.makeText(getContext(), R.string.change_password_success, Toast.LENGTH_SHORT).show();
-                        getActivity().finish();
-                    }
-                }
+                changePassword();
             }
         });
         return view;
+    }
+    private void changePassword(){
+        String currentPassword = edtCurrentPassword.getText().toString();
+        String newPassword = edtNewPassword.getText().toString();
+        String confirmPassword = edtConfirmPassword.getText().toString();
+
+        PasswordManager pm = PasswordManager.get(getContext());
+        Boolean isCurrentPassword = pm.validatePassword(currentPassword);
+        if (isCurrentPassword){
+            Boolean isMatched = pm.validatePassword(newPassword, confirmPassword);
+            if(isMatched) {
+                pm.setPassword(newPassword);
+                Toast.makeText(getContext(), R.string.change_password_success, Toast.LENGTH_SHORT).show();
+                getActivity().finish();
+            }
+        }
     }
 }
