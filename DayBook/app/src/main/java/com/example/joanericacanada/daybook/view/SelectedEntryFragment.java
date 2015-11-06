@@ -29,7 +29,7 @@ public class SelectedEntryFragment extends Fragment {
     //WIDGETS
     private TextView mTxtTitle;
     private TextView mTxtBody;
-    private Entry entry;
+    private Entry mEntry;
 
     public static SelectedEntryFragment newInstance(UUID id){
         Bundle args = new Bundle();
@@ -46,7 +46,7 @@ public class SelectedEntryFragment extends Fragment {
         setHasOptionsMenu(true);
 
         UUID id = (UUID)getArguments().getSerializable(ENTRY_ID);
-        entry = EntryKeeper.get(getActivity()).getEntry(id);
+        mEntry = EntryKeeper.get(getActivity()).getEntry(id);
     }
 
     @Override
@@ -54,14 +54,14 @@ public class SelectedEntryFragment extends Fragment {
         View view = inflater.inflate(R.layout.selected_entry_layout, parent, false);
 
         mTxtTitle = (TextView) view.findViewById(R.id.txtTitle);
-        mTxtTitle.setText(entry.getTitle());
+        mTxtTitle.setText(mEntry.getTitle());
 
-        String currentDate = DateFormat.getDateTimeInstance().format(entry.getDate());
+        String currentDate = DateFormat.getDateTimeInstance().format(mEntry.getDate());
         TextView txtDate = (TextView) view.findViewById(R.id.txtDate);
         txtDate.setText(currentDate);
 
         mTxtBody = (TextView) view.findViewById(R.id.txtBody);
-        mTxtBody.setText(entry.getBody());
+        mTxtBody.setText(mEntry.getBody());
 
         return view;
     }
@@ -77,19 +77,19 @@ public class SelectedEntryFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.edit_entry:
                 Intent editIntent = new Intent(getActivity(), EntryActivity.class);
-                editIntent.putExtra(EntryFragment.ENTRY_ID, entry.getId());
+                editIntent.putExtra(EntryFragment.ENTRY_ID, mEntry.getId());
                 startActivityForResult(editIntent, 0);
                 return true;
             case R.id.delete_entry:
                 ArrayList<Entry> journal = EntryKeeper.get(getActivity()).getEntries();
-                journal.remove(entry);
+                journal.remove(mEntry);
                 getActivity().finish();
                 return true;
             case R.id.export_entry:
                 Intent exportIntent = new Intent(Intent.ACTION_SEND);
                 exportIntent.setType("text/plain");
                 exportIntent.putExtra(Intent.EXTRA_TEXT, exportEntry());
-                exportIntent.putExtra(Intent.EXTRA_SUBJECT,entry.getTitle());
+                exportIntent.putExtra(Intent.EXTRA_SUBJECT,mEntry.getTitle());
                 exportIntent = Intent.createChooser(exportIntent, getString(R.string.export));
                 startActivity(exportIntent);
             default:
@@ -99,13 +99,13 @@ public class SelectedEntryFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mTxtTitle.setText(entry.getTitle());
-        mTxtBody.setText(entry.getBody());
+        mTxtTitle.setText(mEntry.getTitle());
+        mTxtBody.setText(mEntry.getBody());
     }
 
-    // return filled entry template for export
+    // return filled mEntry template for export
     private String exportEntry(){
-        return getString(R.string.entry, entry.getTitle(),
-                        DateFormat.getDateInstance().format(entry.getDate()), entry.getBody());
+        return getString(R.string.entry, mEntry.getTitle(),
+                        DateFormat.getDateInstance().format(mEntry.getDate()), mEntry.getBody());
     }
 }

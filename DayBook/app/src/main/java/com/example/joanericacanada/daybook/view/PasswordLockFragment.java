@@ -34,12 +34,14 @@ public class PasswordLockFragment extends Fragment{
                 String password = edtPassword.getText().toString();
                 PasswordManager pm = PasswordManager.get(getContext());
 
-                if (pm.validatePassword(password)) {
+                if (pm.validatePassword(password, pm.getPassword())) {
                     Toast.makeText(getContext(), R.string.current_password_correct, Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getActivity(), EntryListActivity.class);
                     startActivity(intent);
                     getActivity().finish();
-                }
+                }else
+                    Toast.makeText(getContext(), R.string.current_password_incorrect,
+                            Toast.LENGTH_SHORT).show();
             }
         });
         return view;

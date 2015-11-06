@@ -46,7 +46,8 @@ public class PasswordWizardFragment extends Fragment {
                     Intent intent = new Intent(getActivity(), EntryListActivity.class);
                     startActivity(intent);
                     getActivity().finish();
-                }
+                }else
+                    Toast.makeText(getContext(), R.string.new_password_mismatched, Toast.LENGTH_SHORT).show();
             }
         });
         return view;

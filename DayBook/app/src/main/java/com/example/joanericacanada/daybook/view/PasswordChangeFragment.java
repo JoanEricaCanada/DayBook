@@ -46,14 +46,16 @@ public class PasswordChangeFragment extends Fragment {
         String confirmPassword = edtConfirmPassword.getText().toString();
 
         PasswordManager pm = PasswordManager.get(getContext());
-        Boolean isCurrentPassword = pm.validatePassword(currentPassword);
+        Boolean isCurrentPassword = pm.validatePassword(currentPassword, pm.getPassword());
         if (isCurrentPassword){
             Boolean isMatched = pm.validatePassword(newPassword, confirmPassword);
             if(isMatched) {
                 pm.setPassword(newPassword);
                 Toast.makeText(getContext(), R.string.change_password_success, Toast.LENGTH_SHORT).show();
                 getActivity().finish();
-            }
-        }
+            }else
+                Toast.makeText(getContext(), R.string.new_password_mismatched, Toast.LENGTH_SHORT).show();
+        }else
+            Toast.makeText(getContext(), R.string.current_password_incorrect, Toast.LENGTH_SHORT).show();
     }
 }

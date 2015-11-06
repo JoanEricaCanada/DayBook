@@ -17,35 +17,36 @@ import com.example.joanericacanada.daybook.model.Entry;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 public class EntryFragment extends Fragment {
     //TAGS
     public static final String ENTRY_ID = "id";
 
     //VARIABLES
-    private Entry entry;
+    private Entry mEntry;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UUID id = (UUID)getActivity().getIntent().getSerializableExtra(ENTRY_ID);
-        entry = EntryKeeper.get(getActivity()).getEntry(id);
+        mEntry = EntryKeeper.get(getActivity()).getEntry(id);
 
-        if(entry == null)
-            entry = new Entry();
-        entry.setDate(new Date());
+        if(mEntry == null)
+            mEntry = new Entry();
+        mEntry.setDate(new Date());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.create_entry_fragment, parent, false);
 
-        String currentDate = DateFormat.getDateTimeInstance().format(entry.getDate());
+        String currentDate = DateFormat.getDateTimeInstance().format(mEntry.getDate());
         TextView txtDate = (TextView) view.findViewById(R.id.txtDate);
         txtDate.setText(currentDate);
 
         EditText edtTitle = (EditText) view.findViewById(R.id.edtTitle);
-        edtTitle.setText(entry.getTitle());
+        edtTitle.setText(mEntry.getTitle());
         edtTitle.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -54,17 +55,19 @@ public class EntryFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                entry.setTitle(s.toString());
+                if (Pattern.matches("^ +$", s.toString()))
+                    s = "";
+                mEntry.setTitle(s.toString());
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                //do nothing
+                // do nothing
             }
         });
 
         EditText edtBody = (EditText) view.findViewById(R.id.edtEntry);
-        edtBody.setText(entry.getBody());
+        edtBody.setText(mEntry.getBody());
         edtBody.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -73,7 +76,7 @@ public class EntryFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                entry.setBody(s.toString());
+                mEntry.setBody(s.toString());
             }
 
             @Override
@@ -87,6 +90,25 @@ public class EntryFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        validateEntry();
         EntryKeeper.get(getActivity()).saveEntries();
+    }
+
+    //checks of empty fields
+    private void validateEntry(){
+        if (mEntry.getTitle() == null || mEntry.getTitle().equals("")) {
+            if (mEntry.getBody() == null || mEntry.getBody().equals(""))
+                EntryKeeper.get(getContext()).getEntries().remove(mEntry);
+            else {
+                String title = "(No Title)";
+                int time = 1;
+                for (Entry e : EntryKeeper.get(getContext()).getEntries()) {
+                    if (e != mEntry && e.getTitle().equals(title + time))
+                        time++;
+                }
+                title += time;
+                mEntry.setTitle(title);
+            }
+        }
     }
 }

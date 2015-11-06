@@ -11,20 +11,18 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.joanericacanada.daybook.R;
 import com.example.joanericacanada.daybook.controller.EntryKeeper;
+import com.example.joanericacanada.daybook.controller.JournalAdapter;
 import com.example.joanericacanada.daybook.model.Entry;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -42,18 +40,11 @@ public class EntryListFragment extends ListFragment{
     //WIDGETS
     private Spinner mSpinner;
     private EditText mEditSearch;
-    private journalAdapter mAdapter;
+    private JournalAdapter mAdapter;
 
     @Override
     public void onResume(){
         super.onResume();
-        Entry entry = mJournal.get(mJournal.size()-1);
-        if (entry.getTitle() == null) {
-            if(entry.getBody() == null)
-                mJournal.remove(entry);
-            else
-                entry.setTitle("(No Title)");
-        }
         chooseFilter(mSpinner.getSelectedItemPosition());
         mAdapter.notifyDataSetChanged();
     }
@@ -82,27 +73,17 @@ public class EntryListFragment extends ListFragment{
         super.onActivityCreated(savedInstanceState);
 
         View header = View.inflate(getContext(), R.layout.entry_list_fragment, null);
-
         mEditSearch = (EditText)header.findViewById(R.id.edtSearch);
         mEditSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 //do nothing
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().equals(""))
-                    chooseFilter(mSpinner.getSelectedItemPosition());
-                else {
-                    mResult = new ArrayList<>();
-                    mResult.addAll(search(s));
-                }
-                setListAdapter(new journalAdapter(mResult));
-                mAdapter.notifyDataSetChanged();
+                search(s);
                 mEditSearch.requestFocus();
             }
-
             @Override
             public void afterTextChanged(Editable s) {
                 //do nothing
@@ -116,27 +97,25 @@ public class EntryListFragment extends ListFragment{
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 chooseFilter(position);
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 //do nothing
             }
         });
         mSpinner.setAdapter(adapter);
-
         this.getListView().addHeaderView(header);
-        mAdapter = new journalAdapter(mResult);
+        mAdapter = new JournalAdapter(getContext(), mResult);
         setListAdapter(mAdapter);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        ((journalAdapter)getListAdapter()).notifyDataSetChanged();
+        ((JournalAdapter)getListAdapter()).notifyDataSetChanged();
     }
 
     @Override
     public void onListItemClick(ListView l, View v,int pos, long id){
-        Entry e = ((journalAdapter)getListAdapter()).getItem(pos-1);
+        Entry e = ((JournalAdapter)getListAdapter()).getItem(pos-1);
 
         Intent i = new Intent(getActivity(), EntryPagerActivity.class);
         i.putExtra(SelectedEntryFragment.ENTRY_ID, e.getId());
@@ -188,19 +167,25 @@ public class EntryListFragment extends ListFragment{
                             return lhs.getTitle().compareTo(rhs.getTitle());
                     }
                 });
-                ((journalAdapter)getListAdapter()).notifyDataSetChanged();
+                ((JournalAdapter)getListAdapter()).notifyDataSetChanged();
             }
         }).show();
     }
 
     // search list by keyword
-    private ArrayList<Entry> search(CharSequence cs){
-        ArrayList<Entry> searchResult = new ArrayList<>();
-        for(Entry e : mJournal) {
-            if (e.getTitle().contains(cs))
-                searchResult.add(e);
+    private void search(CharSequence cs){
+        if (cs.toString().equals("")) chooseFilter(mSpinner.getSelectedItemPosition());
+        else {
+            mResult = new ArrayList<>();
+            ArrayList<Entry> searchResult = new ArrayList<>();
+            for(Entry e : mJournal) {
+                if (e.getTitle().toLowerCase().contains(cs.toString().toLowerCase()))
+                    searchResult.add(e);
+            }
+            mResult.addAll(searchResult);
         }
-        return searchResult;
+        setListAdapter(new JournalAdapter(getContext(), mResult));
+        mAdapter.notifyDataSetChanged();
     }
 
     // filter listview by date: month, week, year
@@ -242,30 +227,7 @@ public class EntryListFragment extends ListFragment{
                 }
             }
         }
-        setListAdapter(new journalAdapter(mResult));
-        ((journalAdapter)getListAdapter()).notifyDataSetChanged();
-    }
-
-    //custom array list adapter
-    private class journalAdapter extends ArrayAdapter<Entry>{
-        public journalAdapter(ArrayList<Entry> mJournal){
-            super(getActivity(), R.layout.entry_list_fragment, R.id.listView, mJournal);
-        }
-
-        @Override
-        public View getView(int pos, View convertView, ViewGroup parent){
-            if (convertView == null){
-                convertView = View.inflate(getContext(), R.layout.list_entry_layout, null);
-            }
-
-            Entry entry = getItem(pos);
-            TextView txtTitle, txtDate;
-            txtTitle = (TextView)convertView.findViewById(R.id.txtTitle);
-            txtTitle.setText(entry.getTitle());
-            txtDate = (TextView)convertView.findViewById(R.id.txtDate);
-            txtDate.setText(DateFormat.getDateTimeInstance().format(entry.getDate()));
-
-            return convertView;
-        }
+        setListAdapter(new JournalAdapter(getContext(), mResult));
+        ((JournalAdapter)getListAdapter()).notifyDataSetChanged();
     }
 }

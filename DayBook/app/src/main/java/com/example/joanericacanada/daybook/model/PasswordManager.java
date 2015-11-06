@@ -37,36 +37,16 @@ public class PasswordManager {
         return passwordManager;
     }
 
-    public boolean validatePassword(String inputPassword){
-        if (!isNull(inputPassword)){
-            if (inputPassword.equals(getPassword()))
+    public boolean validatePassword(String password1, String password2){
+        if (!(isNull(password1) & isNull(password2))){
+            if (password1.equals(password2))
                 return true;
-            else
-                Toast.makeText(context, R.string.current_password_incorrect, Toast.LENGTH_SHORT).show();
-        }
-        return false;
-    }
-
-    public boolean validatePassword(String newPassword, String confirmPassword){
-        if(!isNull(newPassword, confirmPassword)){
-            if(newPassword.equals(confirmPassword))
-                return true;
-            else
-                Toast.makeText(context, R.string.new_password_mismatched, Toast.LENGTH_SHORT).show();
         }
         return false;
     }
 
     private boolean isNull(String password){
         if(password.equals("")) {
-            Toast.makeText(context, R.string.input_null, Toast.LENGTH_SHORT).show();
-            return true;
-        }
-        return false;
-    }
-
-    private boolean isNull(String password1, String password2){
-        if(password1.equals("") || password2.equals("")) {
             Toast.makeText(context, R.string.input_null, Toast.LENGTH_SHORT).show();
             return true;
         }

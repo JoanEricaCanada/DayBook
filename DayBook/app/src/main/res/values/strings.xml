@@ -23,9 +23,9 @@
     <string name="current_password_correct">Unlock successful!</string>
     <string name="create_password_success">Password created successful!</string>
     <string name="sort_text">Sort</string>
-    <string name="input_null">Please fill out the fields.</string>\
+    <string name="input_null">Please fill out empty field/s.</string>
     <string name="search_hint">Search title</string>
-    <string name="filter_label">Filter by</string>
+    <string name="filter_label">Filter by </string>
     <string name="export">Export entry via</string>
     <string name="entry">
         %1$s \nDate: %2$s \n\t%3$s
