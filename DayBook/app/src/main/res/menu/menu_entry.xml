@@ -6,7 +6,7 @@
     <item android:id="@+id/new_entry"
         android:title="@string/add_entry"
         android:orderInCategory="100"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="" />
     <item android:id="@+id/change_password"
         android:title="@string/change_password"
         app:showAsAction="ifRoom" />

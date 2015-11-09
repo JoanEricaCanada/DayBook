@@ -45,6 +45,9 @@ public class EntryListFragment extends ListFragment{
     @Override
     public void onResume(){
         super.onResume();
+        Entry e = mJournal.get(mJournal.size()-1);
+        if(e.getTitle() == null)
+            mJournal.remove(e);
         chooseFilter(mSpinner.getSelectedItemPosition());
         mAdapter.notifyDataSetChanged();
     }

@@ -15,6 +15,6 @@
     <dimen name="header_height">50dp</dimen>
     <dimen name="header_text_size">20sp</dimen>
     <dimen name="filter">82dp</dimen>
-    <dimen name="search">200dp</dimen>
+    <dimen name="search">190dp</dimen>
     <dimen name="pad">10dp</dimen>
 </resources>
