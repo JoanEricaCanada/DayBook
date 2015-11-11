@@ -17,6 +17,7 @@ import com.example.joanericacanada.daybook.model.PasswordManager;
  * Created by joanericacanada on 10/30/15.
  */
 public class PasswordLockFragment extends Fragment{
+    //dfjsklfjksdgb
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
